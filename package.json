@@ -1,0 +1,44 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.4",
+    "@types/plotly.js": "^2.33.3",
+    "@vuepic/vue-datepicker": "^9.0.2",
+    "axios": "^1.7.7",
+    "chart.js": "^4.4.4",
+    "chartjs-adapter-moment": "^1.0.1",
+    "exceljs": "^4.4.0",
+    "firebase": "^9.23.0",
+    "lodash": "^4.17.21",
+    "lottie-web": "^5.12.2",
+    "moment": "^2.30.1",
+    "nuxt": "^3.12.4",
+    "pandas-js": "^0.2.4",
+    "plotly.js": "^2.35.0",
+    "vue": "latest",
+    "vue-chartjs": "^5.3.1",
+    "vue3-carousel": "^0.3.3"
+  },
+  "devDependencies": {
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
+    "@types/node-fetch": "^2.6.11",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10"
+  },
+  "volta": {
+    "node": "20.14.0"
+  },
+  "overrides": {
+    "vue": "latest"
+  }
+}
