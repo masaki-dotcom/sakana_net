@@ -14,14 +14,14 @@
     </div>
 
     <!-- 期間選択ボタン -->
-    <div class="mb-4 space-x-2">
-      <button class="btn" @click="changeRange('1m')">1ヶ月</button>
-      <button class="btn" @click="changeRange('3m')">3ヶ月</button>
-      <button class="btn" @click="changeRange('6m')">6ヶ月</button>
-      <button class="btn" @click="changeRange('1y')">1年</button>
-      <button class="btn" @click="changeRange('3y')">3年</button>
-      <button class="btn" @click="changeRange('5y')">5年</button>
-      <button class="btn" @click="changeRange('10y')">10年</button>
+    <div class="mb-4 range-btn-wrapper">
+      <button class="range-btn" @click="changeRange('1m')">1ヶ月</button>
+      <button class="range-btn" @click="changeRange('3m')">3ヶ月</button>
+      <button class="range-btn" @click="changeRange('6m')">6ヶ月</button>
+      <button class="range-btn" @click="changeRange('1y')">1年</button>
+      <button class="range-btn" @click="changeRange('3y')">3年</button>
+      <button class="range-btn" @click="changeRange('5y')">5年</button>
+      <button class="range-btn" @click="changeRange('10y')">10年</button>
     </div>
 
     <div v-if="loading">読み込み中...</div>
@@ -116,13 +116,40 @@ fetchData()
 </script>
 
 <style scoped>
-.btn {
-  padding: 6px 12px;
-  background: #ddd;
-  border-radius: 6px;
-  cursor: pointer;
+.range-btn-wrapper { 
+    display: flex;          /* ← 必須！！ */
+    max-width: 800px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 0;
+    gap: 8px;   /* ★ PC側にも隙間を作る */
 }
-.btn:hover {
-  background: #ccc;
+
+/* ボタンデザイン（共通） */
+.range-btn {
+    flex: 1 1 calc(100% / 7 - 8px);
+    min-width: 0;
+    text-align: center;
+    padding: 8px 6px;
+    background: #ddd;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+/* ---- スマホ（1024px以下）はフルサイズ ---- */
+@media (max-width: 1024px) {
+  .range-btn-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: 100%;
+    justify-content: flex-start;
+    padding-right: 8px;
+  }
+
+  .range-btn {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
 }
 </style>

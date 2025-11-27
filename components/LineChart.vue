@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ width, height }">
+  <div class="chart-box">
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -62,10 +62,8 @@ Chart.register(verticalLinePlugin)
 export default defineComponent({
   name: 'LineChart',
   props: {
-    labels: { type: Array as () => string[], default: () => [] },
-    datasets: { type: Array as () => any[], default: () => [] },
-    width: { type: String, default: '50%' },
-    height: { type: String, default: '44vh' }
+     labels: { type: Array as () => string[], default: () => [] },
+    datasets: { type: Array as () => any[], default: () => [] }
   },
   setup(props) {
     const canvas = ref<HTMLCanvasElement>()
@@ -123,8 +121,21 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.chart-box {
+  width: 50%;
+  height: 44vh;
+}
+
+/* スマホ（768px以下）はフルサイズ */
+@media (max-width: 1024px) {
+  .chart-box {
+    width: 90% !important;
+    height: 30vh !important; /* 100vh だとはみ出る端末があるので 80vh を推奨 */
+  }
+}
+
 canvas {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>
