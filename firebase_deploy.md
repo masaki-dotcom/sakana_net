@@ -25,3 +25,49 @@ firebaseにデプロイする
 ```
 firebase deploy
 ```
+
+
+### Volta の修復解決手順　　
+```
+volta uninstall firebase-tools
+```
+Volta のキャッシュを消す
+
+```
+volta clean
+```
+
+firebase-tools を再インストール
+```
+npm install -g firebase-tools
+```
+firebase.json正しい設定
+```
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+```
+npm run build
+npm run generate
+```
+
+```
+firebase deploy
+```
+
+質問    意味    推奨（Nuxt の場合）
+Overwrite public/index.html?    public/index.html を作り直す？  N
+Set public directory to "public"?   "*"公開フォルダは public でいい？   No → dist に変更
+Configure as single-page app?   SPA モード？    Yes
+Use GitHub deploys? GitHub の自動デプロイ？ 任意
