@@ -120,7 +120,15 @@ export default defineComponent({
 
 @media (max-width: 1024px) {
   .chart-box {
-    width: 90% !important;
+    width: 94% !important;
+    height: 30vh !important;
+  }
+}
+
+/* iPad Pro 11インチ横向き対応 */
+@media screen and (orientation: landscape) and (max-height: 900px) {
+  :deep(.chart-box) {
+    width: 94% !important;
     height: 30vh !important;
   }
 }
