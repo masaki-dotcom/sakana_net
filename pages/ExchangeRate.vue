@@ -13,7 +13,6 @@
       </span>
     </div>
 
-    <!-- 期間選択ボタン -->
     <div class="mb-4 range-btn-wrapper">
       <button class="range-btn" @click="changeRange('1m')">1ヶ月</button>
       <button class="range-btn" @click="changeRange('3m')">3ヶ月</button>
@@ -45,6 +44,8 @@ interface Dataset {
   pointRadius?: number
   pointHoverRadius?: number
   lineTension?: number
+  fill?: boolean
+  backgroundColor?: string
 }
 
 const loading = ref(false)
@@ -53,7 +54,6 @@ const fxDataset = ref<Dataset[]>([])
 const stockDataset = ref<Dataset[]>([])
 const range = ref('10y')
 
-// 最後の日の表示用
 const lastDateDisplay = ref('')
 const lastFx = ref('')
 const lastDjia = ref('')
@@ -65,13 +65,28 @@ const nikkeiChange = ref(0)
 const fetchData = async () => {
   loading.value = true
   try {
-    // const res = await fetch(`/api/fred?range=${range.value}`)
     const res = await fetch(`https://zgbnpkhciscoxkpqdesn.supabase.co/functions/v1/fred/fred?range=${range.value}`)
     const data = await res.json()
 
     labels.value = data.labels
-    fxDataset.value = data.datasets.filter((ds: Dataset) => ds.label === '為替（USD/JPY）')
-    stockDataset.value = data.datasets.filter((ds: Dataset) => ds.label !== '為替（USD/JPY）')
+
+    fxDataset.value = data.datasets
+    .filter((ds: Dataset) => ds.label === '為替（USD/JPY）')
+    .map((ds: any) => ({
+      ...ds,
+      fill: true,
+      backgroundColor: 'rgba(0,0,255,0.1)',
+      borderColor: 'blue'
+    }))
+
+  stockDataset.value = data.datasets
+    .filter((ds: Datase) => ds.label !== '為替（USD/JPY）')
+    .map((ds: any) => ({
+      ...ds,
+      fill: true,
+      backgroundColor: ds.label === '日経平均' ? 'rgba(163,15,114,0.1)' : 'rgba(100,149,237,0.1)',
+      borderColor: ds.label === '日経平均' ? 'rgba(163,15,114,1)' : 'cornflowerblue'
+    }))
 
     if (labels.value.length > 1) {
       const lastIndex = labels.value.length - 1
@@ -79,20 +94,17 @@ const fetchData = async () => {
 
       lastDateDisplay.value = labels.value[lastIndex]
 
-      // FX
       const fxLast = fxDataset.value[0]?.data[lastIndex] ?? 0
       const fxPrev = fxDataset.value[0]?.data[prevIndex] ?? 0
       lastFx.value = fxLast.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       fxChange.value = Number((fxLast - fxPrev).toFixed(2))
 
-      // DJIA
       const djiaData = stockDataset.value.find(ds => ds.label === 'ダウ平均')?.data ?? []
       const djiaLastVal = djiaData[lastIndex] ?? 0
       const djiaPrevVal = djiaData[prevIndex] ?? 0
       lastDjia.value = djiaLastVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       djiaChange.value = Number((djiaLastVal - djiaPrevVal).toFixed(2))
 
-      // Nikkei
       const nikkeiData = stockDataset.value.find(ds => ds.label === '日経平均')?.data ?? []
       const nikkeiLastVal = nikkeiData[lastIndex] ?? 0
       const nikkeiPrevVal = nikkeiData[prevIndex] ?? 0
@@ -106,27 +118,24 @@ const fetchData = async () => {
   }
 }
 
-// 期間変更
 const changeRange = (r: string) => {
   range.value = r
   fetchData()
 }
 
-// 初期ロード
 fetchData()
 </script>
 
 <style scoped>
 .range-btn-wrapper { 
-    display: flex;          /* ← 必須！！ */
+    display: flex;
     max-width: 800px;
     flex-wrap: wrap;
     justify-content: flex-start;
     margin: 0;
-    gap: 8px;   /* ★ PC側にも隙間を作る */
+    gap: 8px;
 }
 
-/* ボタンデザイン（共通） */
 .range-btn {
     flex: 1 1 calc(100% / 7 - 8px);
     min-width: 0;
@@ -137,7 +146,6 @@ fetchData()
     white-space: nowrap;
 }
 
-/* ---- スマホ（1024px以下）はフルサイズ ---- */
 @media (max-width: 1024px) {
   .range-btn-wrapper {
     display: flex;

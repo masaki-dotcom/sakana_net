@@ -16,11 +16,11 @@ import {
   Tooltip,
   TimeScale,
   CategoryScale,
-  Legend
+  Legend,
+  Filler // ← 追加
 } from 'chart.js'
 import 'chartjs-adapter-moment'
 
-// Chart.js プラグイン登録
 Chart.register(
   LineController,
   LineElement,
@@ -30,12 +30,11 @@ Chart.register(
   Tooltip,
   TimeScale,
   CategoryScale,
-  Legend
+  Legend,
+  Filler // ← 追加
 )
 
-// ======================
-// ★ マウスホバー縦線プラグイン
-// ======================
+// マウスホバー縦線プラグイン
 const verticalLinePlugin = {
   id: 'verticalLinePlugin',
   afterDraw(chart: any) {
@@ -50,8 +49,6 @@ const verticalLinePlugin = {
     ctx.lineTo(x, chart.chartArea.bottom)
     ctx.lineWidth = 1
     ctx.strokeStyle = '#555'
-    // ★ 点線をやめる（この行を削除）
-    // ctx.setLineDash([4, 4])
     ctx.stroke()
     ctx.restore()
   }
@@ -62,7 +59,7 @@ Chart.register(verticalLinePlugin)
 export default defineComponent({
   name: 'LineChart',
   props: {
-     labels: { type: Array as () => string[], default: () => [] },
+    labels: { type: Array as () => string[], default: () => [] },
     datasets: { type: Array as () => any[], default: () => [] }
   },
   setup(props) {
@@ -95,14 +92,8 @@ export default defineComponent({
             y: { beginAtZero: false }
           },
           plugins: {
-            legend: {
-              display: true,
-              position: 'top'
-            },
-            tooltip: {
-              mode: 'index',
-              intersect: false
-            }
+            legend: { display: true, position: 'top' },
+            tooltip: { mode: 'index', intersect: false }
           }
         }
       })
@@ -120,17 +111,17 @@ export default defineComponent({
 })
 </script>
 
+
 <style scoped>
 .chart-box {
   width: 50%;
   height: 44vh;
 }
 
-/* スマホ（768px以下）はフルサイズ */
 @media (max-width: 1024px) {
   .chart-box {
     width: 90% !important;
-    height: 30vh !important; /* 100vh だとはみ出る端末があるので 80vh を推奨 */
+    height: 30vh !important;
   }
 }
 
