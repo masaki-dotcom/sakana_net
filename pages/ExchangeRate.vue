@@ -80,7 +80,7 @@ const fetchData = async () => {
     }))
 
   stockDataset.value = data.datasets
-    .filter((ds: Datase) => ds.label !== '為替（USD/JPY）')
+    .filter((ds: Dataset) => ds.label !== '為替（USD/JPY）')
     .map((ds: any) => ({
       ...ds,
       fill: true,
