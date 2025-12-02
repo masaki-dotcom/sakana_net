@@ -65,7 +65,8 @@ const nikkeiChange = ref(0)
 const fetchData = async () => {
   loading.value = true
   try {
-    const res = await fetch(`/api/fred?range=${range.value}`)
+    // const res = await fetch(`/api/fred?range=${range.value}`)
+    const res = await fetch(`https://zgbnpkhciscoxkpqdesn.supabase.co/functions/v1/fred/fred?range=${range.value}`)
     const data = await res.json()
 
     labels.value = data.labels
