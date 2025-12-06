@@ -17,7 +17,7 @@ import {
   TimeScale,
   CategoryScale,
   Legend,
-  Filler // ← 追加
+  Filler
 } from 'chart.js'
 import 'chartjs-adapter-moment'
 
@@ -31,8 +31,54 @@ Chart.register(
   TimeScale,
   CategoryScale,
   Legend,
-  Filler // ← 追加
+  Filler
 )
+
+// Chart.js の TooltipPositionerMap に custom を追加
+declare module 'chart.js' {
+  interface TooltipPositionerMap {
+    custom: (
+      elements: any[],
+      eventPosition: { x: number; y: number },
+      chart: any
+    ) => { x: number; y: number }
+  }
+}
+
+// ▼▼▼ Tooltip をマウスの高さに表示する positioner ▼▼▼
+Tooltip.positioners.custom = function (elements, eventPosition) {
+  // this を Tooltip 型にキャスト
+  const tooltip = this as unknown as import('chart.js').TooltipModel<'line'>
+
+  // chart を安全に取得
+  const chart =
+    elements.length > 0
+      ? elements[0].element.$context.chart
+      : tooltip.chart
+
+  if (!chart) {
+    return {
+      x: 0,
+      y: eventPosition.y
+    }
+  }
+
+  // elements が空 → 左端に合わせる
+  if (!elements.length) {
+    return {
+      x: chart.chartArea.left,
+      y: eventPosition.y
+    }
+  }
+
+  // 通常時（カーソル上のボジション）
+  return {
+    x: elements[0].element.x,
+    y: eventPosition.y
+  }
+}
+// ▲▲▲ ここまで ▲▲▲
+
 
 // マウスホバー縦線プラグイン
 const verticalLinePlugin = {
@@ -93,7 +139,11 @@ export default defineComponent({
           },
           plugins: {
             legend: { display: true, position: 'top' },
-            tooltip: { mode: 'index', intersect: false }
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              position: 'custom'  // ← ここがポイント！
+            }
           }
         }
       })
@@ -111,7 +161,6 @@ export default defineComponent({
 })
 </script>
 
-
 <style scoped>
 .chart-box {
   width: 50%;
@@ -124,7 +173,6 @@ export default defineComponent({
     height: 30vh !important;
   }
 }
-
 /* iPad Pro 11インチ横向き対応 */
 @media screen and (orientation: landscape) and (max-height: 900px) {
   :deep(.chart-box) {
