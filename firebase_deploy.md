@@ -18,6 +18,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
 
 プロジェクトのビルド(distフォルダにビルドする)
 ```
+npm run build
 npm run generate
 ```
 

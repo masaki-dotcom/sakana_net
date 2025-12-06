@@ -165,6 +165,10 @@ export default defineComponent({
 .chart-box {
   width: 50%;
   height: 44vh;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* iOSの長押しメニュー禁止 */
+  -webkit-tap-highlight-color: transparent; /* タップ時のハイライトも消す */
 }
 
 /* スマホ〜タブレット縦向き */
@@ -179,7 +183,7 @@ export default defineComponent({
 @media screen and (min-width: 1024px) and (max-width: 1194px) and (orientation: landscape) {
   .chart-box {
     width: 94%;
-    height: 30vh;
+    height: 40vh;
   }
 }
 
