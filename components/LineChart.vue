@@ -167,22 +167,26 @@ export default defineComponent({
   height: 44vh;
 }
 
+/* スマホ〜タブレット縦向き */
 @media (max-width: 1024px) {
   .chart-box {
-    width: 94% !important;
-    height: 30vh !important;
+    width: 94%;
+    height: 30vh;
   }
 }
-/* iPad Pro 11インチ横向き対応 */
-@media screen and (orientation: landscape) and (max-height: 900px) {
-  :deep(.chart-box) {
-    width: 94% !important;
-    height: 30vh !important;
+
+/* iPad Pro 11" 横向きのみ */
+@media screen and (min-width: 1024px) and (max-width: 1194px) and (orientation: landscape) {
+  .chart-box {
+    width: 94%;
+    height: 30vh;
   }
 }
 
 canvas {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
 }
 </style>
+
+
