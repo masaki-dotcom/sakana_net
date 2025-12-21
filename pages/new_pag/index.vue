@@ -87,7 +87,7 @@ import basetemplate from '~/components/basetemplate.vue'
 
   import { usePostState } from "~/composables/usePostState";
   const lists = ref()
-  lists.value=await usePostState().getPosts()
+  lists.value=await usePostState().getAllPosts()
 
   //スタートポジションの変更
   const authStore = useAuthStore();//ストアーを抽出
@@ -175,7 +175,7 @@ import basetemplate from '~/components/basetemplate.vue'
       display: blog_display.value,
       comment: blog_comment.value,
     });  
-    lists.value=await usePostState().getPosts();
+    lists.value=await usePostState().getAllPosts();
     change_position('normal');//フォームを閉じる
     nowDate.value=''//初期化
     title.value=''//初期化
@@ -215,7 +215,7 @@ import basetemplate from '~/components/basetemplate.vue'
 
     // 全てのアップデート処理が完了するのを待つ
     await Promise.all(updatePromises);
-    lists.value=await usePostState().getPosts();
+    lists.value=await usePostState().getAllPosts();
     change_position('normal');//フォームを閉じる
     nowDate.value=''//初期化
     title.value=''//初期化
@@ -270,7 +270,7 @@ import basetemplate from '~/components/basetemplate.vue'
               });            
               // 全ての削除処理が完了するのを待つ
               await Promise.all(deletePromises);
-              lists.value=await usePostState().getPosts()
+              lists.value=await usePostState().getAllPosts()
           
               
               } catch (err:any) {
