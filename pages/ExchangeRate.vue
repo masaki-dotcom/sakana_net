@@ -63,32 +63,54 @@ const djiaChange = ref(0)
 const nikkeiChange = ref(0)
 
 const fetchData = async () => {
+
   loading.value = true
+
   try {
-    const res = await fetch(`https://zgbnpkhciscoxkpqdesn.supabase.co/functions/v1/fred/fred?range=${range.value}`)
-    const data = await res.json()
 
-    labels.value = data.labels
+    const { data, error } = await useFetch('/api', {
+      query: {
+        range: range.value
+      }
+    })
 
-    fxDataset.value = data.datasets
-    .filter((ds: Dataset) => ds.label === '為替（USD/JPY）')
-    .map((ds: any) => ({
-      ...ds,
-      fill: true,
-      backgroundColor: 'rgba(0,0,255,0.1)',
-      borderColor: 'blue'
-    }))
+    if (error.value) {
+      console.error(error.value)
+      return
+    }
 
-  stockDataset.value = data.datasets
-    .filter((ds: Dataset) => ds.label !== '為替（USD/JPY）')
-    .map((ds: any) => ({
-      ...ds,
-      fill: true,
-      backgroundColor: ds.label === '日経平均' ? 'rgba(163,15,114,0.1)' : 'rgba(100,149,237,0.1)',
-      borderColor: ds.label === '日経平均' ? 'rgba(163,15,114,1)' : 'cornflowerblue'
-    }))
+    if (!data.value) {
+      return
+    }
+
+    labels.value = data.value.labels
+
+    fxDataset.value = data.value.datasets
+      .filter((ds: Dataset) => ds.label === '為替（USD/JPY）')
+      .map((ds: any) => ({
+        ...ds,
+        fill: true,
+        backgroundColor: 'rgba(0,0,255,0.1)',
+        borderColor: 'blue'
+      }))
+
+    stockDataset.value = data.value.datasets
+      .filter((ds: Dataset) => ds.label !== '為替（USD/JPY）')
+      .map((ds: any) => ({
+        ...ds,
+        fill: true,
+        backgroundColor:
+          ds.label === '日経平均'
+            ? 'rgba(163,15,114,0.1)'
+            : 'rgba(100,149,237,0.1)',
+        borderColor:
+          ds.label === '日経平均'
+            ? 'rgba(163,15,114,1)'
+            : 'cornflowerblue'
+      }))
 
     if (labels.value.length > 1) {
+
       const lastIndex = labels.value.length - 1
       const prevIndex = lastIndex - 1
 
@@ -96,24 +118,47 @@ const fetchData = async () => {
 
       const fxLast = fxDataset.value[0]?.data[lastIndex] ?? 0
       const fxPrev = fxDataset.value[0]?.data[prevIndex] ?? 0
-      lastFx.value = fxLast.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+      lastFx.value = fxLast.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+
       fxChange.value = Number((fxLast - fxPrev).toFixed(2))
 
-      const djiaData = stockDataset.value.find(ds => ds.label === 'ダウ平均')?.data ?? []
+      const djiaData =
+        stockDataset.value.find(ds => ds.label === 'ダウ平均')?.data ?? []
+
       const djiaLastVal = djiaData[lastIndex] ?? 0
       const djiaPrevVal = djiaData[prevIndex] ?? 0
-      lastDjia.value = djiaLastVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+      lastDjia.value = djiaLastVal.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+
       djiaChange.value = Number((djiaLastVal - djiaPrevVal).toFixed(2))
 
-      const nikkeiData = stockDataset.value.find(ds => ds.label === '日経平均')?.data ?? []
+      const nikkeiData =
+        stockDataset.value.find(ds => ds.label === '日経平均')?.data ?? []
+
       const nikkeiLastVal = nikkeiData[lastIndex] ?? 0
       const nikkeiPrevVal = nikkeiData[prevIndex] ?? 0
-      lastNikkei.value = nikkeiLastVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+      lastNikkei.value = nikkeiLastVal.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+
       nikkeiChange.value = Number((nikkeiLastVal - nikkeiPrevVal).toFixed(2))
     }
+
   } catch (err) {
+
     console.error('Fetch error:', err)
+
   } finally {
+
     loading.value = false
   }
 }
