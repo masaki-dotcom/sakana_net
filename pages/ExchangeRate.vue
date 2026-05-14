@@ -1,5 +1,5 @@
 <template>
-  <div class="pl-8">
+  <div v-if="mounted" class="pl-8">
     <div class="mt-2 mb-4" v-if="labels.length > 1">
       <strong>{{ lastDateDisplay }}</strong>：
       <span :style="{ color: fxChange >= 0 ? 'blue' : 'red' }">
@@ -26,15 +26,22 @@
     <div v-if="loading">読み込み中...</div>
 
     <div v-else>
-      <LineChart :labels="labels" :datasets="fxDataset" />
-      <LineChart :labels="labels" :datasets="stockDataset" />
+      <ClientOnly>
+        <LineChart :labels="labels" :datasets="fxDataset" />
+      </ClientOnly>
+
+      <ClientOnly>
+        <LineChart :labels="labels" :datasets="stockDataset" />
+      </ClientOnly>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted,nextTick } from 'vue'
 import LineChart from '@/components/LineChart.vue'
+
+const mounted = ref(false)
 
 interface Dataset {
   label: string
@@ -168,7 +175,11 @@ const changeRange = (r: string) => {
   fetchData()
 }
 
-fetchData()
+onMounted(async () => {
+  mounted.value = true
+  await nextTick()
+  await fetchData()
+})
 </script>
 
 <style scoped>
