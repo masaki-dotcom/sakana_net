@@ -1,77 +1,60 @@
-import{
-    getFirestore,
-      getDocs,
-      collection,
-      where,
-      query,
-      orderBy,  
-  } from 'firebase/firestore'
+import {
+  getDocs,
+  collection,
+  where,
+  query,
+  orderBy,
+} from 'firebase/firestore'
 
-export const usePostState = () =>{
-    const firestore=getFirestore()
+import { firestore } from '~/lib/firebase'
 
-    async function getPosts() {
-        return await new Promise<any>(async(resolve,rejects) =>{
-            const res_json=[];
-            const _query = query(
-              collection(firestore,'users'),
-             where("id", "==", 1) ,
-             where("display", "==", "表示"),
-             orderBy(`date`,`desc`)
-            );
-            const sanpshot=await getDocs(_query);
-            for (const doc of sanpshot.docs){
-                res_json.push(
-                  { ...doc.data()})
-            };
+export const usePostState = () => {
 
-            // `date` フィールドでソートする
-            // res_json.sort((a, b) => {                
-            //     // `date`をDateオブジェクトに変換し、ミリ秒で比較
-            //     const dateA = new Date(a.date).getTime();
-            //     const dateB = new Date(b.date).getTime();
-            //     return dateB - dateA; // 降順
-            // });
+  async function getPosts() {
 
-            resolve(res_json)
-        })
+    const res_json:any[] = []
 
-    };
+    const _query = query(
+      collection(firestore, 'users'),
+      where("id", "==", 1),
+      where("display", "==", "表示"),
+      orderBy('date', 'desc')
+    )
 
-    async function getAllPosts() {
-        return await new Promise<any>(async(resolve,rejects) =>{
-            const res_json=[];
-            const _query = query(
-              collection(firestore,'users'),
-             where("id", "==", 1) ,
-             orderBy(`date`,`desc`)
-            );
-            const sanpshot=await getDocs(_query);
-            for (const doc of sanpshot.docs){
-                res_json.push(
-                  { ...doc.data()})
-            };
+    const sanpshot = await getDocs(_query)
 
-            // `date` フィールドでソートする
-            // res_json.sort((a, b) => {                
-            //     // `date`をDateオブジェクトに変換し、ミリ秒で比較
-            //     const dateA = new Date(a.date).getTime();
-            //     const dateB = new Date(b.date).getTime();
-            //     return dateB - dateA; // 降順
-            // });
+    for (const doc of sanpshot.docs) {
+      res_json.push({
+        ...doc.data()
+      })
+    }
 
-            resolve(res_json)
-        })
+    return res_json
+  }
 
-    };
+  async function getAllPosts() {
 
-   
-   
+    const res_json:any[] = []
 
-    return{
-        getPosts,
-        getAllPosts,
-      
-    };
+    const _query = query(
+      collection(firestore, 'users'),
+      where("id", "==", 1),
+      orderBy('date', 'desc')
+    )
 
+    const sanpshot = await getDocs(_query)
+
+    for (const doc of sanpshot.docs) {
+      res_json.push({
+        ...doc.data()
+      })
+    }
+
+    return res_json
+  }
+
+  return {
+    getPosts,
+    getAllPosts,
+  }
 }

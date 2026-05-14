@@ -1,6 +1,9 @@
 {
+  "functions": {
+    "source": ".output/server"
+  },
   "hosting": {
-    "public": "dist",
+    "public": ".output/public",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -9,7 +12,7 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "function": "server"
       }
     ]
   }
