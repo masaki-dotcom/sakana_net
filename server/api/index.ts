@@ -2,17 +2,36 @@
 
 const API_KEY = "9d56bbc6692463ab71bc51945c73c0ca"
 
-// --- 型 ---
+// ======================
+// キャッシュ
+// ======================
+interface CacheData {
+  data: Observation[]
+  timestamp: number
+}
+
+const cache = new Map<string, CacheData>()
+
+// 1時間
+const CACHE_TIME = 1000 * 60 * 60
+
+// ======================
+// 型
+// ======================
 interface Observation {
   date: string
   value: number | null
 }
 
-// --- 期間計算 ---
+// ======================
+// 期間計算
+// ======================
 function getStartDateByRange(range?: string): string {
+
   const today = new Date()
 
   switch (range) {
+
     case "1m":
       today.setMonth(today.getMonth() - 1)
       break
@@ -48,34 +67,104 @@ function getStartDateByRange(range?: string): string {
   return today.toISOString().slice(0, 10)
 }
 
-// --- FRED API取得 ---
+// ======================
+// FRED取得
+// ======================
 async function fetchSeries(
   seriesId: string,
   startDate: string
 ): Promise<Observation[]> {
 
-  const url =
-    `https://api.stlouisfed.org/fred/series/observations` +
-    `?series_id=${seriesId}` +
-    `&api_key=${API_KEY}` +
-    `&file_type=json` +
-    `&observation_start=${startDate}`
+  const cacheKey = `${seriesId}_${startDate}`
 
-  const data: any = await $fetch(url)
+  const cached = cache.get(cacheKey)
 
-  if (!data.observations) {
-    return []
+  // キャッシュ使用
+  if (
+    cached &&
+    Date.now() - cached.timestamp < CACHE_TIME
+  ) {
+
+    console.log(`Cache Hit: ${cacheKey}`)
+
+    return cached.data
   }
 
-  return data.observations
-    .map((v: any) => ({
-      date: v.date,
-      value: v.value === "." ? null : Number(v.value)
-    }))
-    .sort((a, b) => a.date.localeCompare(b.date))
+  try {
+
+    const url =
+      `https://api.stlouisfed.org/fred/series/observations` +
+      `?series_id=${seriesId}` +
+      `&api_key=${API_KEY}` +
+      `&file_type=json` +
+      `&observation_start=${startDate}`
+
+    console.log(`Fetch FRED: ${seriesId}`)
+
+    const data: any = await $fetch(url)
+
+    if (!data.observations) {
+
+      console.error(`No observations: ${seriesId}`)
+
+      return []
+    }
+
+    const result = data.observations
+      .map((v: any) => {
+
+        if (v.value === ".") {
+          return {
+            date: v.date,
+            value: null
+          }
+        }
+
+        let value = Number(v.value)
+
+        // DEXJPUSはJPY/USDなのでUSD/JPYへ変換
+        if (seriesId === "DEXJPUS") {
+
+          if (value !== 0) {
+            const value = Number(v.value)
+          }
+        }
+        
+        return {
+          date: v.date,
+          value
+        }
+        
+      })
+      .sort((a, b) => a.date.localeCompare(b.date))
+
+    // キャッシュ保存
+    cache.set(cacheKey, {
+      data: result,
+      timestamp: Date.now()
+    })
+
+    return result
+
+  } catch (err) {
+
+    console.error(`FRED Error: ${seriesId}`, err)
+
+    // API失敗時はキャッシュを返す
+    if (cached) {
+
+      console.log(`Use Cache: ${cacheKey}`)
+
+      return cached.data
+    }
+
+    return []
+  }
 }
 
-// --- データを揃える ---
+// ======================
+// データ整列
+// ======================
 function unifySeries(
   fx: Observation[],
   nikkei: Observation[],
@@ -84,12 +173,14 @@ function unifySeries(
 
   const latestDate = [fx, nikkei, djia]
     .map(s => s[s.length - 1]?.date)
+    .filter(Boolean)
     .sort()
     .reverse()[0]
 
   const startDate = fx[0]?.date
 
   if (!startDate || !latestDate) {
+
     return {
       labels: [],
       fx: [],
@@ -104,11 +195,15 @@ function unifySeries(
   const lastDate = new Date(latestDate)
 
   while (d <= lastDate) {
+
     labels.push(d.toISOString().slice(0, 10))
+
     d.setDate(d.getDate() + 1)
   }
 
-  const fill = (series: Observation[]): (number | null)[] => {
+  const fill = (
+    series: Observation[]
+  ): (number | null)[] => {
 
     const map: Record<string, number | null> = {}
 
@@ -121,7 +216,9 @@ function unifySeries(
     return labels.map(date => {
 
       if (map[date] != null) {
+
         lastVal = map[date]
+
         return map[date]
       }
 
@@ -137,7 +234,9 @@ function unifySeries(
   }
 }
 
-// --- API本体 ---
+// ======================
+// API本体
+// ======================
 export default defineEventHandler(async (event) => {
 
   try {
@@ -148,14 +247,29 @@ export default defineEventHandler(async (event) => {
 
     const startDate = getStartDateByRange(range)
 
-    // --- データ取得 ---
-    const [fx, nikkei, djia] = await Promise.all([
-      fetchSeries("DEXJPUS", startDate),
-      fetchSeries("NIKKEI225", startDate),
-      fetchSeries("DJIA", startDate)
-    ])
-
-    const unified = unifySeries(fx, nikkei, djia)
+    const fx = await fetchSeries(
+        "DEXJPUS",
+        startDate
+      )
+      await new Promise(resolve =>
+        setTimeout(resolve, 1000)
+      )
+      const nikkei = await fetchSeries(
+        "NIKKEI225",
+        startDate
+      )
+      await new Promise(resolve =>
+        setTimeout(resolve, 1000)
+      )
+      const djia = await fetchSeries(
+        "DJIA",
+        startDate
+      )
+    const unified = unifySeries(
+      fx,
+      nikkei,
+      djia
+    )
 
     return {
       labels: unified.labels,
@@ -172,7 +286,7 @@ export default defineEventHandler(async (event) => {
         {
           label: "日経平均",
           data: unified.nikkei,
-          borderColor: "rgba(163, 15, 114, 1)",
+          borderColor: "rgba(163,15,114,1)",
           borderWidth: 1,
           pointRadius: 1,
           pointHoverRadius: 3,
@@ -192,7 +306,11 @@ export default defineEventHandler(async (event) => {
 
   } catch (err) {
 
+    console.error(err)
+
     return {
+      labels: [],
+      datasets: [],
       error: String(err)
     }
   }
