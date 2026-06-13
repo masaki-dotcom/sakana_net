@@ -135,7 +135,7 @@ import basetemplate from '~/components/basetemplate.vue'
   const blog_error = ref<string>('');  
   const registerData = async () => {
   try {
-    // `all_no`の最大値を取得する
+    // `all_no`の最大値を取得する   
     const q = query(
       collection($firestore, 'users'),
       orderBy('all_no', 'desc'),
@@ -181,6 +181,7 @@ import basetemplate from '~/components/basetemplate.vue'
     title.value=''//初期化
     
   } catch (err:any) {
+    console.error(err);
     blog_error.value = err.message;
   }
   };
