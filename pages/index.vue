@@ -9,7 +9,7 @@
             <div class="text-[26px] ml-2">岩船沖の日の出</div>
             <Carousel :autoplay="4000" :itemsToShow="1" :wrapAround="true" :transition="0">
                   <Slide v-for="(slide,index) in slides1" :key="index">
-                    <img :src="slide"  class="shadow img-fluid rounded-lg " alt="岩船沖の日の出" />
+                    <img :src="slide"  loading="lazy" decoding="async" class="shadow img-fluid rounded-lg " alt="岩船沖の日の出" />
                   </Slide>        
                 <template #addons>
                   <Pagination />
@@ -33,9 +33,11 @@
                             </div>  
                             <!-- <div class="out_line-placeholder" ></div> -->
                               <div class="flex justify-center  " v-for="(item, index) in paginatedPosts" :key="index" >
-                                  <div class="cursor-pointer out_line mt-3"   @click="navigateToPage(item)">
+                                  <div class="cursor-pointer out_line mt-3"   @click="() => {
+                                        navigateToPage(item)
+                                      }">
                                     <!-- <div class="text-[22px]">{{ item.date }}: {{ item.name }}</div> -->
-                                    <img :src="item.image"  />
+                                    <img :src="item.image" loading="lazy" decoding="async"/>
                                   </div>
                               </div>
                         </div>
@@ -46,7 +48,7 @@
                               <div class="text-[22px]">たい</div>
                               <Carousel :autoplay="4000" :itemsToShow="1" :wrapAround="true" :transition="0">
                                       <Slide v-for="(slide,index) in slides2" :key="index">
-                                        <img :src="slide"  class="shadow img-fluid cursor-pointer" alt="たい" @click="changeURL(slide)"/>
+                                        <img :src="slide" loading="lazy" decoding="async" class="shadow img-fluid cursor-pointer" alt="たい" @click="changeURL(slide)"/>
                                       </Slide>        
                                     <template #addons>
                                       <Pagination />
@@ -58,7 +60,7 @@
                               <div class="text-[22px]">ひらめ</div>
                               <Carousel :autoplay="4000" :itemsToShow="1" :wrapAround="true" :transition="0">
                                       <Slide v-for="(slide,index) in slides3" :key="index">
-                                        <img :src="slide"  class="shadow img-fluid cursor-pointer" alt="ひらめ" @click="changeURL(slide)"/>
+                                        <img :src="slide" loading="lazy" decoding="async" class="shadow img-fluid cursor-pointer" alt="ひらめ" @click="changeURL(slide)"/>
                                       </Slide>        
                                     <template #addons>
                                       <Pagination />
@@ -168,19 +170,16 @@ const itemsPerPage = ref(10)
 const currentPage = ref(1)
 
 const totalPages = computed(() => {
-return Math.ceil(posts.value.length / itemsPerPage.value)
+  return Math.ceil(totalCount.value / itemsPerPage.value)
 })
 
-const paginatedPosts = computed(() => {
-const start = (currentPage.value - 1) * itemsPerPage.value
-const end = start + itemsPerPage.value
-return posts.value.slice(start, end)
-})
+const paginatedPosts = computed(() => posts.value)
 
 // ページ遷移の処理
 const router = useRouter();
 const route = useRoute();
 const navigateToPage = (item: Post) => {
+  console.log("クリック", item)
 router.push({ 
   path: '/pag',
   query: {
@@ -194,12 +193,14 @@ router.push({
 // ページ変更時の処理
 //ストアーを抽出
 const authStore = useAuthStore();
-const changePage=(page: number)=> {
-currentPage.value = page 
-// クエリパラメータとしてcurrentPageを設定
-router.push({ query: { ...route.query, page: page.toString() } });
-//ストアーに保存
-authStore.catch_currentPagelNo(page)
+const changePage = async (page: number) => {
+  if(page < 1) return
+  if(page > totalPages.value) return
+  currentPage.value = page
+  posts.value = await usePostState().getPosts(
+      currentPage.value,
+      itemsPerPage.value
+  )
 }
 
 //画像を選択した時のURLを抽出
@@ -211,7 +212,17 @@ const changeURL=(url:string)=>{
   
 //DB所得の設定
 import { usePostState } from "~/composables/usePostState";  
-posts.value=await usePostState().getPosts()
+const totalCount = ref(0)
+posts.value = await usePostState().getPosts(
+  currentPage.value,
+  itemsPerPage.value
+)
+totalCount.value =
+  await usePostState().getPostCount()
+
+
+
+
 
 //Lottie設定
 import Lottie from '@/components/Lottie.vue'
@@ -222,18 +233,7 @@ const defaultOptions = {
 animationData: animationData,  
 };
 
-// ページが読み込まれたときにクエリパラメータをチェック
-onMounted(() => {
-const pageQuery = route.query.page;
-if (pageQuery) {
-  currentPage.value = parseInt(pageQuery as string, 10);
-}
-// DBからデータを取得
-usePostState().getPosts().then(data => {
-  posts.value = data;
-});
 
-});
 
 </script>
 
