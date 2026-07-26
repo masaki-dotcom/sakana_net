@@ -28,16 +28,20 @@
                                   <PaginationPre 
                                     :currentPage="currentPage"
                                     :totalPages="totalPages"
+                                    :disabled="loading"
                                     @changePage="changePage"
                                   />
                             </div>  
                             <!-- <div class="out_line-placeholder" ></div> -->
-                              <div class="flex justify-center  " v-for="(item, index) in paginatedPosts" :key="index" >
+                              <div class="flex justify-center  " v-for="(item, index) in paginatedPosts" :key="item.all_no" >
                                   <div class="cursor-pointer out_line mt-3"   @click="() => {
                                         navigateToPage(item)
                                       }">
                                     <!-- <div class="text-[22px]">{{ item.date }}: {{ item.name }}</div> -->
-                                    <img :src="item.image" />
+                                    <img
+                                        :key="item.image"
+                                        :src="item.image"
+                                      />
                                   </div>
                               </div>
                         </div>
@@ -192,14 +196,23 @@ router.push({
 // ページ変更時の処理
 //ストアーを抽出
 const authStore = useAuthStore();
+const loading = ref(false)
 const changePage = async (page: number) => {
-  if(page < 1) return
-  if(page > totalPages.value) return
+  if (loading.value) return
+  if (page < 1) return
+  if (page > totalPages.value) return
+  loading.value = true
   currentPage.value = page
-  posts.value = await usePostState().getPosts(
-      currentPage.value,
-      itemsPerPage.value
-  )
+  try {
+    posts.value = [
+      ...await usePostState().getPosts(
+        currentPage.value,
+        itemsPerPage.value
+      )
+    ]
+  } finally {
+    loading.value = false
+  }
 }
 
 //画像を選択した時のURLを抽出
@@ -212,10 +225,12 @@ const changeURL=(url:string)=>{
 //DB所得の設定
 import { usePostState } from "~/composables/usePostState";  
 const totalCount = ref(0)
-posts.value = await usePostState().getPosts(
-  currentPage.value,
-  itemsPerPage.value
-)
+posts.value = [
+  ...await usePostState().getPosts(
+    currentPage.value,
+    itemsPerPage.value
+  )
+]
 totalCount.value =
   await usePostState().getPostCount()
 

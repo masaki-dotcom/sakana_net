@@ -4,7 +4,7 @@
     <!-- 先頭 -->
     <button
       class="px-3 py-2 rounded border border-blue-600 bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
-      :disabled="currentPage === 1"
+      :disabled="disabled || currentPage === 1"
       @click="changePage(1)"
     >
       |&lt;&lt;
@@ -13,7 +13,7 @@
     <!-- 前へ -->
     <button
       class="px-3 py-2 rounded border border-blue-600 bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
-      :disabled="currentPage === 1"
+      :disabled="disabled || currentPage === 1"
       @click="changePage(currentPage - 1)"
     >
       ← 前へ
@@ -27,7 +27,7 @@
     <!-- 次へ -->
     <button
       class="px-3 py-2 rounded border border-blue-600 bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
-      :disabled="currentPage === totalPages"
+      :disabled="disabled || currentPage === totalPages"
       @click="changePage(currentPage + 1)"
     >
       次へ →
@@ -36,7 +36,7 @@
     <!-- 最後 -->
     <button
       class="px-3 py-2 rounded border border-blue-600 bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500"
-      :disabled="currentPage === totalPages"
+      :disabled="disabled || currentPage === totalPages"
       @click="changePage(totalPages)"
     >
       &gt;&gt;|
@@ -54,6 +54,10 @@ const props = defineProps({
   totalPages: {
     type: Number,
     required: true
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
