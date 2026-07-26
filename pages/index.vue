@@ -9,7 +9,7 @@
             <div class="text-[26px] ml-2">岩船沖の日の出</div>
             <Carousel :autoplay="4000" :itemsToShow="1" :wrapAround="true" :transition="0">
                   <Slide v-for="(slide,index) in slides1" :key="index">
-                    <img :src="slide"  loading="lazy" decoding="async" class="shadow img-fluid rounded-lg " alt="岩船沖の日の出" />
+                    <img :src="slide"  class="shadow img-fluid rounded-lg " alt="岩船沖の日の出" />
                   </Slide>        
                 <template #addons>
                   <Pagination />
@@ -37,7 +37,7 @@
                                         navigateToPage(item)
                                       }">
                                     <!-- <div class="text-[22px]">{{ item.date }}: {{ item.name }}</div> -->
-                                    <img :src="item.image" loading="lazy" decoding="async"/>
+                                    <img :src="item.image" />
                                   </div>
                               </div>
                         </div>
@@ -48,7 +48,7 @@
                               <div class="text-[22px]">たい</div>
                               <Carousel :autoplay="4000" :itemsToShow="1" :wrapAround="true" :transition="0">
                                       <Slide v-for="(slide,index) in slides2" :key="index">
-                                        <img :src="slide" loading="lazy" decoding="async" class="shadow img-fluid cursor-pointer" alt="たい" @click="changeURL(slide)"/>
+                                        <img :src="slide" class="shadow img-fluid cursor-pointer" alt="たい" @click="changeURL(slide)"/>
                                       </Slide>        
                                     <template #addons>
                                       <Pagination />
@@ -60,7 +60,7 @@
                               <div class="text-[22px]">ひらめ</div>
                               <Carousel :autoplay="4000" :itemsToShow="1" :wrapAround="true" :transition="0">
                                       <Slide v-for="(slide,index) in slides3" :key="index">
-                                        <img :src="slide" loading="lazy" decoding="async" class="shadow img-fluid cursor-pointer" alt="ひらめ" @click="changeURL(slide)"/>
+                                        <img :src="slide" class="shadow img-fluid cursor-pointer" alt="ひらめ" @click="changeURL(slide)"/>
                                       </Slide>        
                                     <template #addons>
                                       <Pagination />
@@ -179,7 +179,6 @@ const paginatedPosts = computed(() => posts.value)
 const router = useRouter();
 const route = useRoute();
 const navigateToPage = (item: Post) => {
-  console.log("クリック", item)
 router.push({ 
   path: '/pag',
   query: {
