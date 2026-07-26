@@ -14,6 +14,8 @@
     
                <img
                 :src="task.image"
+                loading="lazy"
+                decoding="async"
                 v-if="task.image"             
                 @click="$router.push('/pag_image?all_no=' + task.all_no)"
                 class="my-2 img-thumbnail cursor-pointer"
