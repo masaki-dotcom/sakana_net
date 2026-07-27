@@ -14,9 +14,15 @@
     
                <img
                 :src="task.image"
-                v-if="task.image"             
-                @click="$router.push('/pag_image?all_no=' + task.all_no)"
+                v-if="task.image" 
                 class="my-2 img-thumbnail cursor-pointer"
+                @click="$router.push({
+                  path: '/pag_image',
+                  query: {
+                    all_no: task.all_no,
+                    page: page
+                  }
+                })"
               />
               
            </div>
@@ -58,6 +64,7 @@ const get_data= async()=>{
   };
 };
 
+const page = computed(() => route.query.page);
 onMounted(() => {
     get_data();
 });

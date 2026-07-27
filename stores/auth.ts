@@ -25,14 +25,14 @@ export const useAuthStore = defineStore(
 
     //currentPagelNoの所得
     const currentPagelNo = ref<number>(1); // ref を使って初期値を設定
-    const catch_currentPagelNo = (newPagelNo: number) => {
-      currentPagelNo.value = newPagelNo; // totalNo の value プロパティにアクセスして値を設定
-    }
+    
    
     //画像を選択したとのURL
     const ImageURL=ref<string>("");
-    const selectImage=(newImage:string)=>{
-      ImageURL.value=newImage;
+    
+    const selectImage = (newImage: string, pageNo: number) => {
+      ImageURL.value = newImage;
+      currentPagelNo.value = pageNo;
     }
 
 
@@ -42,7 +42,6 @@ export const useAuthStore = defineStore(
       validateRoute,
       start_position,
       setStart_posi,
-      catch_currentPagelNo,
       currentPagelNo,
       ImageURL,
       selectImage,

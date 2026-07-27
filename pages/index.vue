@@ -159,6 +159,7 @@ const slides4 = ref([ //他
 
 //ページネーション設定
 import PaginationPre from '~/components/Pagination.vue'
+import { onMounted } from 'vue'
 // Post型を定義
 interface Post {
 name: string
@@ -183,14 +184,15 @@ const paginatedPosts = computed(() => posts.value)
 const router = useRouter();
 const route = useRoute();
 const navigateToPage = (item: Post) => {
-router.push({ 
-  path: '/pag',
-  query: {
-    total_no: item.total_no.toString(),
-    date: item.date,
-    name: item.name
-  }
-});
+  router.push({
+    path: "/pag",
+    query: {
+      total_no: item.total_no.toString(),
+      date: item.date,
+      name: item.name,
+      page: currentPage.value.toString()   // ←追加
+    }
+  });
 };
 
 // ページ変更時の処理
@@ -201,42 +203,44 @@ const changePage = async (page: number) => {
   if (loading.value) return
   if (page < 1) return
   if (page > totalPages.value) return
+
   loading.value = true
-  currentPage.value = page
+
   try {
-    posts.value = [
-      ...await usePostState().getPosts(
-        currentPage.value,
-        itemsPerPage.value
-      )
-    ]
+    await router.replace({
+      query: {
+        ...route.query,
+        page: page.toString()
+      }
+    })
   } finally {
     loading.value = false
   }
 }
 
 //画像を選択した時のURLを抽出
-const changeURL=(url:string)=>{
-  //ストアーに保存
-  authStore.selectImage(url)
-  router.push("/pag_image2");
+const changeURL = (url: string) => {
+  authStore.selectImage(url, currentPage.value);
+
+  router.push({
+    path: "/pag_image2",
+    query: {
+      page: currentPage.value
+    }
+  });
 }
   
 //DB所得の設定
 import { usePostState } from "~/composables/usePostState";  
 const totalCount = ref(0)
-posts.value = [
-  ...await usePostState().getPosts(
-    currentPage.value,
-    itemsPerPage.value
-  )
-]
+// posts.value = [
+//   ...await usePostState().getPosts(
+//     currentPage.value,
+//     itemsPerPage.value
+//   )
+// ]
 totalCount.value =
   await usePostState().getPostCount()
-
-
-
-
 
 //Lottie設定
 import Lottie from '@/components/Lottie.vue'
@@ -247,6 +251,24 @@ const defaultOptions = {
 animationData: animationData,  
 };
 
+const loadPosts = async () => {
+  const page = Number(route.query.page ?? 1)
+  currentPage.value = page
+  posts.value = [
+    ...await usePostState().getPosts(
+      currentPage.value,
+      itemsPerPage.value
+    )
+  ]
+}
+await loadPosts();
+totalCount.value = await usePostState().getPostCount();
+watch(
+  () => route.fullPath,
+  async () => {
+    await loadPosts();
+  }
+);
 
 
 </script>

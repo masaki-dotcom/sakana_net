@@ -2,7 +2,12 @@
     <div class="flex justify-center px-2">
         <div>
                 <lottie :options="defaultOptions" :height="150" :width="400" />              
-                    <img :src="image_url" class="img-thumbnail mt-2"  @click="$router.push('/?page='+`${pageQuery}`)" />
+                    <img :src="image_url" class="img-thumbnail mt-2"  @click="$router.push({
+                        path: '/',
+                        query: {
+                          page: pageQuery
+                        }
+                      })" />
                 
 
         </div> 
@@ -17,11 +22,10 @@ animationData: animationData,
 };
 
 
-const authStore = useAuthStore();//ストアーを抽出
+
 const route = useRoute()//ルートクエリの設定
 const queryAllno = computed(() => route.query.all_no);
-const pageQuery = computed(() => authStore.currentPagelNo);
-
+const pageQuery = computed(() => route.query.page);
 //データの所得
 import { getFirestore, addDoc, collection, query, where, getDocs, orderBy, limit, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 const lists = ref<Array<any>>([]);
