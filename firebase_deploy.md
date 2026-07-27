@@ -24,6 +24,11 @@ npm run build
 firebaseにデプロイする
 ```
 firebase deploy
+
+
+//--force により、Firebase Hostingへ強制的に新しい静的ファイル一式を反映できます。
+
+firebase deploy --only hosting --force
 ```
 
 
