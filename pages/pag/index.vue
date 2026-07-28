@@ -4,7 +4,21 @@
        <div >
          <lottie :options="defaultOptions" :height="100" :width="400" />
    
-         <router-link to="/"  ><div style=" color: #0000FF;" class="text-[24px] ml-2 mt-2">{{queryDate}} : {{$route.query.name}}</div></router-link>
+         <router-link
+              :to="{
+                path: '/',
+                query: {
+                  page: page
+                }
+              }"
+            >
+              <div
+                style="color:#0000FF;"
+                class="text-[24px] ml-2 mt-2"
+              >
+                {{ queryDate }} : {{ queryName }}
+              </div>
+            </router-link>
             <div
                 class="imageBox"
                 v-for="task in lists"
