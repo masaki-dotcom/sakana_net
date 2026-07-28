@@ -327,6 +327,41 @@ onUnmounted(() => {
   cancelAnimationFrame(animationId)
 })
 
+// TOPボタン表示
+const showTopButton = ref(false)
+
+// スクロール監視
+const handleScroll = () => {
+  const scroll =
+    window.pageYOffset ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop
+
+  showTopButton.value = scroll > 300
+}
+
+
+// 一番上へ戻る
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  })
+}
+
+// イベント登録
+onMounted(() => {
+  handleScroll()
+
+  window.addEventListener("scroll", handleScroll, {
+    passive: true
+  })
+})
+
+// イベント解除
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll)
+})
 
 </script>
 
