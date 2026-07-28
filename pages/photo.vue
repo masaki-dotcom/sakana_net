@@ -1,0 +1,243 @@
+
+<template>
+    <div>
+        <!-- ヘッダーバー -->
+        <div class="max-w-[850px] mx-auto mt-2 px-2">
+
+  <div
+    class="
+      flex
+      items-center
+      justify-between
+      bg-gradient-to-r
+      from-blue-500
+      to-cyan-400
+      text-white
+      rounded-xl
+      shadow-lg
+      px-3
+      py-2
+    "
+  >
+
+    <!-- タイトル -->
+    <div class="flex items-center">
+
+      <span class="text-xl sm:text-3xl mr-1 sm:mr-2">
+        📷
+      </span>
+
+      <span class="text-lg sm:text-2xl font-bold">
+        Photo
+      </span>
+
+    </div>
+
+
+    <!-- メニュー -->
+    <div class="flex gap-2 sm:gap-3">
+
+
+      <NuxtLink
+        to="/"
+        class="
+          bg-white
+          text-blue-600
+          px-2
+          sm:px-4
+          py-1
+          sm:py-2
+          rounded-full
+          text-sm
+          sm:text-base
+          font-bold
+          shadow
+          hover:bg-blue-100
+          transition
+        "
+      >
+        🎣 戻る
+      </NuxtLink>
+
+
+
+      <NuxtLink
+        to="/video"
+        class="
+          bg-white
+          text-blue-600
+          px-2
+          sm:px-4
+          py-1
+          sm:py-2
+          rounded-full
+          text-sm
+          sm:text-base
+          font-bold
+          shadow
+          hover:bg-blue-100
+          transition
+        "
+      >
+        🎬 Video
+      </NuxtLink>
+
+
+    </div>
+
+
+  </div>
+
+</div>
+
+        <!-- コンテンツ -->
+        <div class="flex justify-center px-2 mt-5">
+            <div class="w-[800px]">
+            <!-- 日の出 -->
+            <div class="mb-8">
+                <div class="text-[26px] ml-2 mb-2 font-bold">
+                🌅 岩船沖の日の出
+                </div>
+                <Carousel
+                :autoplay="4000"
+                :itemsToShow="1"
+                :wrapAround="true"
+                :transition="0"
+                >
+                <Slide
+                    v-for="(slide,index) in slides1"
+                    :key="index"
+                >
+                    <img
+                    :src="slide"
+                    class="
+                        shadow
+                        rounded-lg
+                        w-full
+                    "
+                    @click="changeURL(slide)"
+                    />
+                </Slide>
+                <template #addons>
+                    <Pagination />
+                </template>
+                </Carousel>
+            </div>
+            <!-- 鯛 -->
+            <div class="mb-8">
+                <div class="text-[24px] font-bold mb-2">
+                🎣 たい
+                </div>
+                <Carousel
+                :autoplay="4000"
+                :itemsToShow="1"
+                :wrapAround="true"
+                >
+                <Slide
+                    v-for="slide in slides2"
+                    :key="slide"
+                >
+                    <img
+                    :src="slide"
+                    class="
+                        shadow
+                        rounded-lg
+                        w-full
+                    "
+                    @click="changeURL(slide)"
+                    />
+                </Slide>
+                <template #addons>
+                    <Pagination/>
+                </template>
+                </Carousel>
+            </div>
+
+            <!-- ヒラメ -->
+            <div class="mb-8">
+                <div class="text-[24px] font-bold mb-2">
+                🐟 ひらめ
+                </div>
+
+                <Carousel
+                :autoplay="4000"
+                :itemsToShow="1"
+                :wrapAround="true"
+                >
+                <Slide
+                    v-for="slide in slides3"
+                    :key="slide"
+                >
+                    <img
+                    :src="slide"
+                    class="
+                        shadow
+                        rounded-lg
+                        w-full
+                    "
+                    @click="changeURL(slide)"
+                    />
+
+                </Slide>
+                <template #addons>
+                    <Pagination/>
+                </template>
+                </Carousel>
+            </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<script setup >
+//vue3-carouselの設定
+import 'vue3-carousel/dist/carousel.css';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+// スライドデータを定義
+const slides1 = ref([ //IwafuneOki
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/sun1.jpg?alt=media&token=9c10ebc3-d9ea-47a3-81ea-5b03c672ad4f",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/sun3.jpg?alt=media&token=732c3379-23d7-4f4f-8aa3-0279fd2ab886",
+]);
+const slides2 = ref([ //tai
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20210612_tai.jpg?alt=media&token=2fc9678d-4b4f-416a-9cf8-4a33fb0cdac0",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20200829_tai.jpg?alt=media&token=1fcd2158-d288-45a9-8db1-87cdef5356fd",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20170925_madai_5kg1.jpg?alt=media&token=cf099b02-830e-458e-9aa2-ac8d5e47ae20",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20151105_masai.jpg?alt=media&token=e33d6f50-83ee-48cb-8c90-2b4c5b85f513",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20181022_madai.jpg?alt=media&token=7b33dcfa-d73a-429d-85f6-b8acf44dd2de",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20171026_madai_MLmAutl.jpg?alt=media&token=298ea047-f3aa-44d5-8fe3-e78f2b7b0d25",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20171014_madai_BLxi7uY.jpg?alt=media&token=b8bc191e-f3c5-45cf-b459-d31d58e44270",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20170925_madai2_yE8MxNa.jpg?alt=media&token=d40bba66-990b-4152-a269-bc877e44f886",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20151023_big_masai.jpg?alt=media&token=4f59dda0-056b-4c44-ab8e-93d209fe5510",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20171026_madai_MLmAutl.jpg?alt=media&token=298ea047-f3aa-44d5-8fe3-e78f2b7b0d25"
+]);
+const slides3 = ref([ //Hirame
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20200822_hirame.jpg?alt=media&token=fa548072-ebbe-4d43-9ed0-141161b039d6",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20190927_hirame.jpg?alt=media&token=c83753b0-8491-4196-8e10-628f0f44402a",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20181112_hihame.jpg?alt=media&token=eb8585de-8882-4e6d-89b5-553d7f81e2ea",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20161126_hirame.jpg?alt=media&token=5d8d76b3-7eaf-476b-be0f-9f57aed0c91e",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20161114_hirame.jpg?alt=media&token=6149bfce-af1f-4df9-ab44-0dcfd2ac1c08",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20160925_hirame.jpg?alt=media&token=a6c2c14c-5ad3-4520-af5e-2cf3c5d40e1d",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20160420_hirame.jpg?alt=media&token=cb6c52ae-b943-4a2d-b92b-c190c3b9c7c7",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20151105_hirame.jpg?alt=media&token=13cb1e55-bbea-42ef-b878-2a8fa50896ff"
+]);
+const slides4 = ref([ //他
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20151023_madai.jpg?alt=media&token=f4f42ce5-6e39-477f-9c72-de01628f0b69",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20160305_mebaru.jpg?alt=media&token=acca71af-72e9-43da-9bfd-c444add3be6d",
+"https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20151006_herame.jpg?alt=media&token=9bd3ddf7-77e5-4519-9a5c-5eb033b5a5f4" 
+]);
+const router = useRouter();
+const authStore = useAuthStore();
+const currentPage = ref(1)
+//画像を選択した時のURLを抽出
+const changeURL = (url) => {
+  authStore.selectImage(url, currentPage.value);
+
+  router.push({
+    path: "/pag_image2",
+    query: {
+      page: currentPage.value
+    }
+  });
+}
+</script>
