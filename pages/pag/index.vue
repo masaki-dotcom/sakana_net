@@ -27,12 +27,9 @@
 </button>
 
        <div >
-<<<<<<< HEAD
-         <lottie :options="defaultOptions" :height="100" :width="400" />   
-=======
+
          <lottie :options="defaultOptions" :height="100" :width="400" />
    
->>>>>>> 385fe196e9a9f16cf34dc7e913f76f49e8fdcd3b
          <router-link
               :to="{
                 path: '/',
@@ -48,10 +45,7 @@
                 {{ queryDate }} : {{ queryName }}
               </div>
             </router-link>
-<<<<<<< HEAD
 
-=======
->>>>>>> 385fe196e9a9f16cf34dc7e913f76f49e8fdcd3b
             <div
                 class="imageBox"
                 v-for="task in lists"
