@@ -39,7 +39,12 @@
 
 
       <NuxtLink
-        to="/"
+        :to="{
+            path:'/',
+            query:{
+            page: currentPage
+            }
+        }"
         class="
           bg-white
           text-blue-600
@@ -190,7 +195,7 @@
 </template>
 
 
-<script setup >
+<script setup lang="ts">
 //vue3-carouselの設定
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
@@ -226,18 +231,36 @@ const slides4 = ref([ //他
 "https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20160305_mebaru.jpg?alt=media&token=acca71af-72e9-43da-9bfd-c444add3be6d",
 "https://firebasestorage.googleapis.com/v0/b/sakana-881ae.appspot.com/o/20151006_herame.jpg?alt=media&token=9bd3ddf7-77e5-4519-9a5c-5eb033b5a5f4" 
 ]);
+
+
+// postsの型を指定して初期化
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const currentPage = ref(1)
+
+onMounted(() => {
+  currentPage.value = Number(route.query.page ?? 1)
+})
+
 //画像を選択した時のURLを抽出
-const changeURL = (url) => {
-  authStore.selectImage(url, currentPage.value);
+const changeURL = (url:string) => {
+
+  const page = Number(route.query.page ?? 1)
+
+  authStore.selectImage(
+    url,
+    page
+  )
 
   router.push({
-    path: "/pag_image2",
-    query: {
-      page: currentPage.value
+    path:"/pag_image2",
+    query:{
+      page:String(page)
     }
-  });
+  })
 }
+
+
+
 </script>

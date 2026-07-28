@@ -42,7 +42,12 @@
 
 
       <NuxtLink
-        to="/"
+        :to="{
+            path:'/',
+            query:{
+            page: currentPage
+            }
+        }"
         class="
           bg-white
           text-blue-600
@@ -174,6 +179,12 @@
 
 
 <script setup>
+const route = useRoute();
+const currentPage = ref(1)
+
+onMounted(() => {
+  currentPage.value = Number(route.query.page ?? 1)
+})
 
 const videos=[
 

@@ -39,7 +39,12 @@
 
 
       <NuxtLink
-        to="/photo"
+        :to="{
+            path:'/photo',
+            query:{
+              page: currentPage
+            }
+          }"
         class="
           bg-white
           text-blue-600
@@ -61,8 +66,13 @@
 
 
 
-      <NuxtLink
-        to="/video"
+      <NuxtLink       
+        :to="{
+            path:'/video',
+            query:{
+              page: currentPage
+            }
+          }"
         class="
           bg-white
           text-blue-600
