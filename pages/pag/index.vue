@@ -1,10 +1,49 @@
 
 <template>
     <div class="flex justify-center px-2">
+      <!-- TOPボタン -->
+<button
+ v-show="showTopButton"
+  @click="scrollToTop"
+  class="
+    fixed
+    bottom-5
+    right-5
+    z-50
+    w-14
+    h-14
+    rounded-full
+    bg-blue-600
+    text-white
+    shadow-xl
+    hover:bg-blue-700
+    transition
+  "
+>
+  ⬆
+  <div class="text-[11px] leading-none">
+    TOP
+  </div>
+</button>
+
        <div >
-         <lottie :options="defaultOptions" :height="100" :width="400" />
-   
-         <router-link to="/"  ><div style=" color: #0000FF;" class="text-[24px] ml-2 mt-2">{{queryDate}} : {{$route.query.name}}</div></router-link>
+         <lottie :options="defaultOptions" :height="100" :width="400" />   
+         <router-link
+              :to="{
+                path: '/',
+                query: {
+                  page: page
+                }
+              }"
+            >
+              <div
+                style="color:#0000FF;"
+                class="text-[24px] ml-2 mt-2"
+              >
+                {{ queryDate }} : {{ queryName }}
+              </div>
+            </router-link>
+
             <div
                 class="imageBox"
                 v-for="task in lists"
@@ -68,6 +107,43 @@ const page = computed(() => route.query.page);
 onMounted(() => {
     get_data();
 });
+// TOPボタン表示
+const showTopButton = ref(false)
+
+// スクロール監視
+const handleScroll = () => {
+  const scroll = Math.max(
+    window.scrollY,
+    document.documentElement.scrollTop,
+    document.body.scrollTop
+  )
+
+  showTopButton.value = scroll > 100
+}
+
+let animationId: number
+
+const loop = () => {
+  handleScroll()
+  animationId = requestAnimationFrame(loop)
+}
+
+// 一番上へ戻る
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  })
+}
+
+onMounted(() => {
+  loop()
+})
+
+onUnmounted(() => {
+  cancelAnimationFrame(animationId)
+})
+
 </script>
 
 <style scoped>

@@ -1,5 +1,29 @@
 <template>
 <div>
+  <!-- TOPボタン -->
+<button
+ v-show="showTopButton"
+  @click="scrollToTop"
+  class="
+    fixed
+    bottom-5
+    right-5
+    z-50
+    w-14
+    h-14
+    rounded-full
+    bg-blue-600
+    text-white
+    shadow-xl
+    hover:bg-blue-700
+    transition
+  "
+>
+  ⬆
+  <div class="text-[11px] leading-none">
+    TOP
+  </div>
+</button>
 
   <!-- タイトル + メニュー -->
   <div class="max-w-[850px] mx-auto mt-2 px-2">
@@ -266,6 +290,42 @@ watch(
     await loadPosts();
   }
 );
+// TOPボタン表示
+const showTopButton = ref(false)
+
+// スクロール監視
+const handleScroll = () => {
+  const scroll = Math.max(
+    window.scrollY,
+    document.documentElement.scrollTop,
+    document.body.scrollTop
+  )
+
+  showTopButton.value = scroll > 100
+}
+
+let animationId: number
+
+const loop = () => {
+  handleScroll()
+  animationId = requestAnimationFrame(loop)
+}
+
+// 一番上へ戻る
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  })
+}
+
+onMounted(() => {
+  loop()
+})
+
+onUnmounted(() => {
+  cancelAnimationFrame(animationId)
+})
 
 
 </script>
