@@ -151,7 +151,6 @@
         class="
         grid
         grid-cols-1
-        lg:grid-cols-2
         gap-10
         "
       >
@@ -165,6 +164,8 @@
           :key="task.all_no"
           class="
           fishing-card
+          max-w-[800px]
+          mx-auto
           opacity-0
           translate-y-10
           transition-all
@@ -177,7 +178,7 @@
           shadow-xl
           border
           border-white/40
-          "
+        "
         >
 
           <!-- ===========================
@@ -214,7 +215,7 @@
 
             <!-- グラデーション -->
 
-            <div
+            <!-- <div
               class="
               absolute
               inset-0
@@ -224,7 +225,7 @@
               to-transparent
               pointer-events-none
               "
-            ></div>
+            ></div> -->
 
             <!-- 写真タイトル -->
 
@@ -239,15 +240,15 @@
 
               <div
                 class="
-                text-[17px]
-                font-extrabold
+                text-[20px]
+                font-black
                 text-white
                 tracking-wide
-                drop-shadow-[0_3px_6px_rgba(0,0,0,1)]
-                "
-                >
-                {{task.comment}}
-                </div>
+                drop-shadow-[0_4px_8px_rgba(0,0,0,1)]
+              "
+              >
+                {{ task.comment }}
+              </div>
 
             </div>
 
@@ -1198,51 +1199,6 @@ html {
 
 
 }
-
-
-
-
-/* =====================================
-   画像グラデーション
-===================================== */
-
-
-.image-hover::after {
-
-
-  content:"";
-
-
-  position:absolute;
-
-
-  inset:0;
-
-
-  background:
-
-    linear-gradient(
-
-      to top,
-
-      rgba(
-        0,
-        0,
-        0,
-        .55
-      ),
-
-      transparent 50%
-
-    );
-
-
-  pointer-events:none;
-
-
-}
-
-
 
 
 
