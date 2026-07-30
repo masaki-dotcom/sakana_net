@@ -184,75 +184,44 @@
           <!-- ===========================
                   画像
           ============================ -->
-
           <div
-            class="
-            relative
-            overflow-hidden
-            image-hover
-            "
-          >
+                  class="relative overflow-hidden image-hover"
+                >
 
-            <img
-              v-if="task.image"
-              :src="task.image"
-              class="
-              w-full
-              object-cover
-              cursor-pointer
-              transition-all
-              duration-700
-              hover:scale-105
-              "
-              @click="$router.push({
-                path:'/pag_image',
-                query:{
-                  all_no:task.all_no,
-                  page:page
-                }
-              })"
-            >
+                  <img
+                    v-if="task.image"
+                    :src="task.image"
+                    class="w-full object-cover cursor-pointer transition-all duration-700 hover:scale-105"
+                    @click="$router.push({
+                      path:'/pag_image',
+                      query:{
+                        all_no:task.all_no,
+                        page:page
+                      }
+                    })"
+                  >
 
-            <!-- グラデーション -->
+                  <!-- 画像内に表示（短いコメントだけ） -->
+                  <div
+                    v-if="(task.comment?.length ?? 0) < 100"
+                    class="absolute left-3 bottom-6 text-white"
+                  >
+                    <div
+                      class="text-[20px] font-black tracking-wide drop-shadow-[0_4px_8px_rgba(0,0,0,1)]"
+                    >
+                      {{ task.comment }}
+                    </div>
+                  </div>
 
-            <!-- <div
-              class="
-              absolute
-              inset-0
-              bg-gradient-to-t
-              from-black/80
-              via-transparent
-              to-transparent
-              pointer-events-none
-              "
-            ></div> -->
+                </div>
 
-            <!-- 写真タイトル -->
-
-            <div
-              class="
-              absolute
-              left-3
-              bottom-6
-              text-white
-              "
-            >
-
-              <div
-                class="
-                text-[20px]
-                font-black
-                text-white
-                tracking-wide
-                drop-shadow-[0_4px_8px_rgba(0,0,0,1)]
-              "
-              >
-                {{ task.comment }}
-              </div>
-
-            </div>
-
-          </div>
+                <!-- 長いコメントは画像の下 -->
+                <div
+                  v-if="(task.comment?.length ?? 0) >= 100"
+                  class="p-6 text-xl font-bold text-slate-800 dark:text-white"
+                >
+                  {{ task.comment }}
+        </div>
 
           <!-- ===========================
                   コメント
