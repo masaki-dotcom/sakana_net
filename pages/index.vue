@@ -154,10 +154,14 @@
       >
 
         <div
-          class="cursor-pointer out_line mt-3"
+          class="cursor-pointer out_line mt-3  relative"
           @click="navigateToPage(item)"
         >
-
+          <!-- 日付 -->
+          <div  class="absolute bottom-2 right-2 bg-black/15 text-white text-sm px-2 py-1 rounded z-10 ">
+            {{ item.date }}
+          </div>
+          
           <img
             :src="item.image"
             class="rounded-lg shadow"
